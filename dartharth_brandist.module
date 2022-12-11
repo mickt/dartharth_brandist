@@ -1,0 +1,38 @@
+<?php
+
+/**
+ * @file
+ */
+use Drupal\file\Entity\File;
+use Drupal\image\Entity\ImageStyle;
+
+function dartharth_brandist_theme() {
+	$brands = [];
+	$tree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree('brand', 0, 1, TRUE);
+	foreach ($tree as $key => $brand) {
+		$aliasManager = \Drupal::service('path_alias.manager');
+		$brand_title = $brand->name->value;
+		$brand_url = $aliasManager->getAliasByPath('/taxonomy/term/' . $brand->tid->value);
+		
+		$term_ids = array();
+		$term_ids[] = $brand->tid->value;
+		$subtree = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadChildren($brand->tid->value, $brand->vid->value);
+		if ($subtree) {
+			foreach ($subtree as $child) {
+				$term_ids[] = $child->tid->value;
+			}
+		}
+		$nodes = \Drupal::entityTypeManager()->getStorage('node')->loadByProperties(['field_proizvoditel' => $term_ids, 'status' => 1]);
+		$nodes_count = count($nodes);
+		$brands[$key]['name'] =  $brand_title;
+		$brands[$key]['url'] = $brand_url;
+		$brands[$key]['count'] = $nodes_count;
+	}
+
+	$info['brands'] = [
+		'variables' => [
+			'brands' => $brands,
+		],
+	];
+	return $info;
+}
