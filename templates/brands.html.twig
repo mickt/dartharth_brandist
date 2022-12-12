@@ -1,0 +1,20 @@
+<div class="brands clearfix">
+	{% for item in brands %}
+		<div class="brands-item">
+			<div class="brands-head">
+				<a href="{{ item.url }}">
+					<div class="brands-title">
+						<div class="brands-title-row">
+							<div class="brands-title-cell">
+								<span>{{ item.name }}</span>
+							</div>
+						</div>
+					</div>
+				</a>
+			</div>
+			<div class="brands-count">
+				<span>{{ item.count }} {{ item.word }}</span>
+			</div>
+		</div>
+	{% endfor %}
+</div>
